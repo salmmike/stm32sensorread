@@ -46,4 +46,4 @@ clean:
 
 # flash
 flash:
-	$(ST_FLASH) write ${BUILDDIR}/$(PROJECT).bin 0x8000000
+	$(ST_FLASH) --reset write ${BUILDDIR}/$(PROJECT).bin 0x8000000
