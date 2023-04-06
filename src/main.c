@@ -105,6 +105,11 @@ void lcd_clear()
     lcd_send_cmd(0x1);
 }
 
+void lcd_set_cursor(int row, int column)
+{
+    lcd_send_cmd(column | (row == 0) ? 0x80 : 0xC0);
+}
+
 void lcd_init()
 {
     mpsdelay(50);
@@ -160,12 +165,17 @@ int main(void) {
         USART3_Print(datastr);
         char datastr2[100] = "Humidity: ";
         mscanf_int(datastr2, hum);
+        lcd_clear();
+        lcd_set_cursor(0, 0);
+
         USART3_Print(datastr2);
+
         lcd_send_string(datastr);
+        lcd_set_cursor(1, 0);
+        lcd_send_string(datastr2);
 
         GPIO_ResetBits(GPIOC, LED_Pin);
         USART3_Print("");
         mpsdelay(DELAY*10);
-        lcd_clear();
     }
 }
