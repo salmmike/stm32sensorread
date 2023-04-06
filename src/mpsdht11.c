@@ -34,7 +34,7 @@ int DHT11_Read(int* temperature, int* humidity)
     GPIO_ResetBits(DHT11_PORT, DHT11_PIN);
     mpsdelay(20);
     GPIO_SetBits(DHT11_PORT, DHT11_PIN);
-    mpsudelay(30);
+    mpsudelay(24);
     init_GPIO_input(DHT11_PORT, DHT11_PIN);
     while (!GPIO_ReadInputDataBit(DHT11_PORT, DHT11_PIN)) {}
     while (GPIO_ReadInputDataBit(DHT11_PORT, DHT11_PIN)) {}
@@ -45,11 +45,18 @@ int DHT11_Read(int* temperature, int* humidity)
 
     USART3_Print("5 bytes read");
 
+    int sum = 0;
+
     for (int i = 0; i < 5; ++i) {
         char datastr[100] = "Databyte: ";
         mscanf_int(datastr, data[i]);
         USART3_Print(datastr);
+        if (i != 4) {
+            sum += data[i];
+        }
     }
+    *humidity = data[0];
+    *temperature = data[2];
 
-    return 0;
+    return sum == data[4];
 }
