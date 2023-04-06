@@ -17,7 +17,6 @@ int mscanf_int(char* buff, int num)
         ++start;
     }
 
-    //buff[start + i + 1] = 0;
     for (int k = i - 1; k >= 0; --k) {
         buff[start + i - k] = temp[k];
     }

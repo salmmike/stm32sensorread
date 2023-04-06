@@ -18,7 +18,7 @@ int main(void) {
     lcd_init();
     lcd_clear();
 
-    lcd_send_cmd(0x80);
+    lcd_set_cursor(0, 0);
 
     // main loop
     while(1) {

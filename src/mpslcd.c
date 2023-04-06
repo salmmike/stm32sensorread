@@ -9,7 +9,7 @@
 
 static void I2C1_Init()
 {
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB | RCC_APB2Periph_AFIO, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_I2C1, ENABLE);
 
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -39,9 +39,6 @@ static void I2C1_Send(uint8_t data, uint8_t address)
 
     I2C_Send7bitAddress(I2C1, address, I2C_Direction_Transmitter);
         while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED));
-
-    I2C_SendData(I2C1, address);
-        while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
 
     I2C_SendData(I2C1, data);
         while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_BYTE_TRANSMITTED));
@@ -104,19 +101,22 @@ void lcd_set_cursor(int row, int column)
     lcd_send_cmd(column | (row == 0) ? 0x80 : 0xC0);
 }
 
+
+// Init sequence from https://controllerstech.com/i2c-lcd-in-stm32/
 void lcd_init()
 {
     I2C1_Init();
 
-    mpsdelay(50);
+    mpsdelay(40);
     lcd_send_cmd(0x30);
     mpsdelay(5);
     lcd_send_cmd(0x30);
-    mpsdelay(1);
+    mpsudelay(110);
     lcd_send_cmd(0x30);
     mpsdelay(10);
     lcd_send_cmd(0x20);
     mpsdelay(10);
+
 
     lcd_send_cmd(0x28);
     mpsdelay(1);
